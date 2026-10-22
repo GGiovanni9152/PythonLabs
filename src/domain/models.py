@@ -95,3 +95,14 @@ class Assignment:
     title: str
     template_id: str | None
     allowed_templates: tuple[str, ...] = field(default_factory=tuple)
+
+@dataclass(frozen=True, slots=True)
+class AnalysisReport:
+    analyzer_id: str
+    analyzer_version: str
+    score: float | None
+    rubric_feedback: str
+    similarity: float | None = None
+    evidence: tuple[int, ...] = field(default_factory=tuple)
+    metadata: dict[str, Any] = field(default_factory=dict)
+    
