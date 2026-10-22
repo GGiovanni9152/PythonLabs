@@ -78,4 +78,15 @@ class AnalysisReport:
     similarity: float | None = None
     evidence: tuple[int, ...] = field(default_factory=tuple)
     metadata: dict[str, Any] = field(default_factory=dict)
+
+@dataclass(frozen=True, slots=True)
+class ManifestEntry:
+    submission_id: str
+    content_hash: str
+    processing_version: str
+
+@dataclass(frozen=True, slots=True)
+class Manifest:
+    corpus_version: str
+    entries: tuple["ManifestEntry", ...]
     
