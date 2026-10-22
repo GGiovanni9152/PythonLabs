@@ -15,41 +15,14 @@ class AIDeclaration:
     verified_by_student: bool
 
     @classmethod
-    def from_raw(cls, raw: Any):
-        if not isinstance(raw, dict): #нужный тип
-            raise ValueError("ai_declaration must be an object")
-
-        allowed = {"used", "verified_by_student", "tool", "purpose"}
-        unknown = set(raw.keys()) - allowed
-
-        #Проверки полей
-        if unknown:
-            raise ValueError(f"unknown fields: {unknown}")
-        
-        for required in ("used", "verified_by_student"):
-            if required not in raw:
-                raise ValueError(f"missing fields: {required}")
-        
-        if not isinstance(raw["used"], bool) or not isinstance(raw["verified_by_student"], bool):
-            raise ValueError("used and verified_by_student must be bool")
-        
-        tool = raw.get("tool")
-        purpose = raw.get("purpose")
-
-        if tool is not None and not isinstance(tool, str):
-            raise ValueError("tool must be str or null")
-        if purpose is not None and not isinstance(purpose, str):
-            raise ValueError("purpose must be str or null")
-
-        if raw["used"]:
-            if not tool or not isinstance(tool, str) or not tool.strip():
-                raise ValueError("tool is required when used = True")
-            
-            if not purpose or not isinstance(purpose, str) or not purpose.strip():
-                raise ValueError("purpose is required when used = True")
-            
-        return cls(used=raw["used"], verified_by_student=raw["verified_by_student"],
-                   tool=tool, purpose=purpose)
+    def from_raw(cls, raw: dict) -> "AIDeclaration":
+        """Создание из словаря без валидации (валидацию делает pydantic)."""
+        return cls(
+            used = raw["used"],
+            verified_by_student = raw["verified_by_student"],
+            tool = raw.get("tool"),
+            purpose = raw.get("purpose"),
+        )
 
 
 
