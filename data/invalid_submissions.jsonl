@@ -1,0 +1,4 @@
+{"schema_version":1,"submission_id":"bad-1","student_id":"","assignment_id":"a-1","submitted_at":"2026-09-01T10:00:00+03:00","text":"x","code":"","template_id":null,"ai_declaration":{"used":false,"verified_by_student":true,"tool":null,"purpose":null}}
+{"schema_version":1,"submission_id":"bad-2","student_id":"s-1","assignment_id":"a-1","submitted_at":"2026-09-01T10:00:00","text":"x","code":"","template_id":null,"ai_declaration":{"used":false,"verified_by_student":true,"tool":null,"purpose":null}}
+{not json
+{"schema_version":1,"submission_id":"bad-4","student_id":"s-1","assignment_id":"a-1","submitted_at":"2026-09-01T10:00:00+03:00","text":"x","code":"","studnet_id":"typo","template_id":null,"ai_declaration":{"used":false,"verified_by_student":true,"tool":null,"purpose":null}}

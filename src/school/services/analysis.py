@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.ai.config import ModeConfig
-from src.ai.feature_extractor import BasicFeatureExtractor
-from src.ai.feedback_builder import BasicFeedbackBuilder
-from src.ai.stub_model import StubModel
-from src.analyzers.registry import AnalyzerRegistry
-from src.domain.contracts import AnalysisContext, Analyzer, FeatureExtractor, FeedbackBuilder, Model
-from src.domain.models import AnalysisReport, Assignment, Submission
+from school.ai.config import ModeConfig
+from school.ai.feature_extractor import BasicFeatureExtractor
+from school.ai.feedback_builder import BasicFeedbackBuilder
+from school.ai.stub_model import StubModel
+from school.analyzers.registry import AnalyzerRegistry
+from school.domain.contracts import AnalysisContext, Analyzer, FeatureExtractor, FeedbackBuilder, Model
+from school.domain.models import AnalysisReport, Assignment, Submission
 
 
 class AnalysisService:

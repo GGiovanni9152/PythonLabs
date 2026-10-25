@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from src.domain.contracts import SubmissionSource
+from school.domain.contracts import SubmissionSource
 
 class InMemorySource:
     def __init__(self, items: Iterable[str]) -> None:

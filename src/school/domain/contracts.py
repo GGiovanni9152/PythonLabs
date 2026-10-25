@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Iterable, Protocol, runtime_checkable
-from src.domain.models import Assignment, Submission, AnalysisReport
+from school.domain.models import Assignment, Submission, AnalysisReport
 
 from dataclasses import dataclass
 

@@ -4,9 +4,9 @@ import json
 
 from pydantic import ValidationError
 
-from src.domain.errors import SubmissionError
-from src.domain.models import AIDeclaration, Submission
-from src.validation.pydantic_models import SubmissionModel
+from school.domain.errors import SubmissionError
+from school.domain.models import AIDeclaration, Submission
+from school.validation.pydantic_models import SubmissionModel
 
 def _to_domain(model: SubmissionModel) -> Submission:
     ai = model.ai_declaration

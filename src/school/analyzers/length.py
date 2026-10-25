@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from src.domain.contracts import AnalysisContext
-from src.domain.models import AnalysisReport, Submission
+from school.domain.contracts import AnalysisContext
+from school.domain.models import AnalysisReport, Submission
 
 class LengthAnalyzer:
     analyzer_id = "length"

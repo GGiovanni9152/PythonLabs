@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
-from src.domain.models import Submission
+from school.domain.models import Submission
 
 class BasicFeatureExtractor:
     def extract(self, submission: Submission) -> dict[str, Any]:

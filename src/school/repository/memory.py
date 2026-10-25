@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from src.domain.contracts import AcceptResult
-from src.domain.models import Submission
+from school.domain.contracts import AcceptResult
+from school.domain.models import Submission
 
 class InMemorySubmissionRepository:
     def __init__(self) -> None:

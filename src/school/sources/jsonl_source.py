@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import Iterable
-from src.domain.contracts import SubmissionSource
+from school.domain.contracts import SubmissionSource
 
 class JSONLSource:
     def __init__(self, path: str | Path) -> None:

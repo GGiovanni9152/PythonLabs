@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
-from src.domain.contracts import AcceptResult, SubmissionRepository, SubmissionSource
-from src.domain.errors import SubmissionError
-from src.domain.models import Assignment, Manifest, ManifestEntry, Submission
-from src.validation.validator import parse_submission
+from school.domain.contracts import AcceptResult, SubmissionRepository, SubmissionSource
+from school.domain.errors import SubmissionError
+from school.domain.models import Assignment, Manifest, ManifestEntry, Submission
+from school.validation.validator import parse_submission
 
 
 @dataclass(frozen=True, slots=True)

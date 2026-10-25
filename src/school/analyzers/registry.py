@@ -1,5 +1,5 @@
 from __future__ import annotations
-from src.domain.contracts import Analyzer
+from school.domain.contracts import Analyzer
 
 class AnalyzerRegistry:
     def __init__(self) -> None:
