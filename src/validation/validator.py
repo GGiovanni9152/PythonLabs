@@ -28,9 +28,9 @@ def _to_domain(model: SubmissionModel) -> Submission:
     )
 
 def parse_submission(raw: str) -> Submission:
-    try: #кривой json
+    try: 
         data = json.loads(raw)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError as e: #кривой json
         raise SubmissionError("format_error", None, f"invalid JSON: {e}") from e
     
     if not isinstance(data, dict):
