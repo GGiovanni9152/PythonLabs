@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Iterable, Protocol, runtime_checkable
-from school.domain.models import Assignment, Submission, AnalysisReport
+from school.domain.models import Assignment, Submission, AnalysisReport, CorpusEntry, Pair, SimilarityReport
 
 from dataclasses import dataclass
 
@@ -49,3 +49,12 @@ class FeedbackBuilder(Protocol):
 @runtime_checkable
 class Model(Protocol):
     def predict(self, features: dict[str, Any]) -> dict[str, Any]: ...
+
+@runtime_checkable
+class SimilarityAnalyzer(Protocol):
+    @property
+    def analyzer_id(self) -> str: ...
+    @property
+    def analyzer_version(self) -> str: ...
+    
+    def analyze_pair(self, pair: Pair, entries: dict[str, CorpusEntry]) -> SimilarityReport: ...

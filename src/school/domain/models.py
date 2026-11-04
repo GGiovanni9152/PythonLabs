@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
+from enum import Enum
+
 @dataclass(frozen=True, slots=True)
 class AIDeclaration:
     used: bool
@@ -89,4 +91,46 @@ class ManifestEntry:
 class Manifest:
     corpus_version: str
     entries: tuple["ManifestEntry", ...]
-    
+
+class DerivationRelation(str, Enum):
+    EXACT_COPY = "exact_copy" 
+    FORMATTING_CHANGE = "formatting"
+    RENAME = "rename"
+    COMMON_TEMPLATE = "template"
+    INDEPENDENT = "independent"
+
+
+@dataclass(frozen=True, slots=True)
+class CorpusEntry:
+    submission_id: str
+    student_id: str
+    assignment_id: str
+    family_id: str
+    code: str
+    text: str
+    derivation_relation: DerivationRelation
+    template_only: bool
+
+@dataclass(frozen=True, slots=True)
+class Pair:
+    submission_id_a: str
+    submission_id_b: str
+    assignment_id: str
+    student_id_a: str
+    student_id_b: str
+    family_id_a: str
+    family_id_b: str
+    derivation_relation: DerivationRelation
+    template_only: bool
+
+@dataclass(frozen=True, slots=True)
+class SimilarityReport:
+    analyzer_id: str
+    analyzer_version: str
+    submission_id_a: str
+    submission_id_b: str
+    score: float | None
+    evidence: tuple[tuple[int, int], ...]
+    template_overlap: float
+    metadata: dict[str, Any] = field(default_factory=dict)
+
