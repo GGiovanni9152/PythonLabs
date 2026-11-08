@@ -136,3 +136,64 @@ def test_evidence_points_to_existing_lines():
     for line_a, line_b in report.evidence:
         assert 1 <= line_a <= lines_a, f"line {line_a} out of range [1, {lines_a}]"
         assert 1 <= line_b <= lines_b, f"line {line_b} out of range [1, {lines_b}]"
+
+def test_student_repeat_version_is_tracked_separately():
+    code = 'def solve():\n    x = int(input())\n    print(x * 2)'
+
+    entry_v1 = CorpusEntry(
+        submission_id = "sub-001",
+        student_id = "student-001",
+        assignment_id = "a-1",
+        family_id = "fam-1",
+        code = code,
+        text = "версия 1",
+        derivation_relation = DerivationRelation.EXACT_COPY,
+        template_only = False,
+    )
+    entry_v2 = CorpusEntry(
+        submission_id = "sub-010",
+        student_id = "student-001", 
+        assignment_id = "a-1",
+        family_id = "fam-1",
+        code = code,
+        text = "Версия 2",
+        derivation_relation = DerivationRelation.EXACT_COPY,
+        template_only = False,
+    )
+    
+    pair = Pair(
+        submission_id_a = entry_v1.submission_id,
+        submission_id_b = entry_v2.submission_id,
+        assignment_id = "a-1",
+        student_id_a = entry_v1.student_id,
+        student_id_b = entry_v2.student_id,
+        family_id_a = entry_v1.family_id,
+        family_id_b = entry_v2.family_id,
+        derivation_relation = DerivationRelation.EXACT_COPY,
+        template_only = False,
+    )
+    
+    analyzer = TokenBaselineAnalyzer()
+    entries = {entry_v1.submission_id: entry_v1, entry_v2.submission_id: entry_v2}
+    report = analyzer.analyze_pair(pair, entries)
+    
+    assert report.score == 1.0
+
+def test_template_only_does_not_cause_false_accusation():
+    template_code = 'def solve():\n    # TODO: implement\n    pass'
+    
+    code_a = template_code + '\n    x = 1\n    print(x)'
+    code_b = template_code + '\n    y = 2\n    print(y)'
+    
+    entry_a = _make_entry("sub-001", code_a)
+    entry_b = _make_entry("sub-002", code_b, family_id="fam-2")
+    pair = _make_pair(entry_a, entry_b)
+    
+    analyzer = TokenBaselineAnalyzer()
+    entries = {entry_a.submission_id: entry_a, entry_b.submission_id: entry_b}
+    report = analyzer.analyze_pair(pair, entries, template_code=template_code)
+    
+    assert report.template_overlap > 0.5
+    
+    assert report.score is not None
+    assert report.score < 0.7
