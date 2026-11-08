@@ -38,7 +38,7 @@ def ngrams(tokens: list[str], n: int = 3) -> set[tuple[str, ...]]:
     return set(tuple(tokens[i:i + n]) for i in range(len(tokens) - n + 1))
 
 def jaccard_similarity(set_a: set, set_b: set) -> float | None:
-    if not set_a and not set_b:
+    if not set_a or not set_b:
         return None
     
     intersection = len(set_a & set_b)
