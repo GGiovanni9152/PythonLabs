@@ -34,3 +34,10 @@ class SimilarityService:
             reports.append(report)
         
         return reports
+
+    def repeat_version_pairs(self, pairs: Iterable[Pair]) -> list[Pair]:
+        return [
+            p for p in pairs
+            if p.student_id_a == p.student_id_b
+            and p.submission_id_a != p.submission_id_b
+        ]
