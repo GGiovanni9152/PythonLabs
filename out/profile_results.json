@@ -1,0 +1,95 @@
+{
+  "seed": 42,
+  "num_runs": 3,
+  "sizes": [
+    100,
+    1000,
+    5000
+  ],
+  "results": [
+    {
+      "num_entries": 100,
+      "num_pairs": 200,
+      "method": "token",
+      "num_runs": 3,
+      "wall_time_median": 0.2614504000002853,
+      "wall_time_mean": 0.28078770000017056,
+      "wall_time_min": 0.2421979000000647,
+      "wall_time_max": 0.33871480000016163,
+      "peak_memory_median": 57475,
+      "peak_memory_mean": 84569.33333333333,
+      "peak_memory_min": 57459,
+      "peak_memory_max": 138774
+    },
+    {
+      "num_entries": 100,
+      "num_pairs": 200,
+      "method": "tfidf",
+      "num_runs": 3,
+      "wall_time_median": 1.4139556999998604,
+      "wall_time_mean": 1.4157730666665884,
+      "wall_time_min": 1.378995300000497,
+      "wall_time_max": 1.4543681999994078,
+      "peak_memory_median": 122773,
+      "peak_memory_mean": 157437,
+      "peak_memory_min": 107586,
+      "peak_memory_max": 241952
+    },
+    {
+      "num_entries": 1000,
+      "num_pairs": 2000,
+      "method": "token",
+      "num_runs": 3,
+      "wall_time_median": 2.2462818999993033,
+      "wall_time_mean": 2.2391261666665137,
+      "wall_time_min": 2.219239600000037,
+      "wall_time_max": 2.2518570000002,
+      "peak_memory_median": 641396,
+      "peak_memory_mean": 644892,
+      "peak_memory_min": 641380,
+      "peak_memory_max": 651900
+    },
+    {
+      "num_entries": 1000,
+      "num_pairs": 2000,
+      "method": "tfidf",
+      "num_runs": 3,
+      "wall_time_median": 14.437973000000056,
+      "wall_time_mean": 16.902960933333514,
+      "wall_time_min": 14.000415400000747,
+      "wall_time_max": 22.270494399999734,
+      "peak_memory_median": 791125,
+      "peak_memory_mean": 791125,
+      "peak_memory_min": 791109,
+      "peak_memory_max": 791141
+    },
+    {
+      "num_entries": 5000,
+      "num_pairs": 10000,
+      "method": "token",
+      "num_runs": 3,
+      "wall_time_median": 23.398161000000073,
+      "wall_time_mean": 23.4313436333335,
+      "wall_time_min": 18.49243480000041,
+      "wall_time_max": 28.403435100000024,
+      "peak_memory_median": 3449124,
+      "peak_memory_mean": 3514948,
+      "peak_memory_min": 3449108,
+      "peak_memory_max": 3646612
+    },
+    {
+      "num_entries": 5000,
+      "num_pairs": 10000,
+      "method": "tfidf",
+      "num_runs": 3,
+      "wall_time_median": 67.12726980000025,
+      "wall_time_mean": 68.14416346666651,
+      "wall_time_min": 66.4267049,
+      "wall_time_max": 70.8785156999993,
+      "peak_memory_median": 3781391,
+      "peak_memory_mean": 3781393.6666666665,
+      "peak_memory_min": 3781223,
+      "peak_memory_max": 3781567
+    }
+  ]
+}
