@@ -8,7 +8,10 @@ class TokenBaselineAnalyzer:
     analyzer_id = "token_baseline"
     analyzer_version = "1.0.0"
     
-    def analyze_pair(self, pair: Pair, entries: dict[str, CorpusEntry], template_code: str | None = None) -> SimilarityReport:
+    def analyze_pair(self, pair: Pair, entries: dict[str, CorpusEntry], template_code: str | None = None, *, config=None) -> SimilarityReport:
+        if config is not None:
+            template_code = config.template_for(pair.assignment_id) or template_code
+        
         entry_a = entries[pair.submission_id_a]
         entry_b = entries[pair.submission_id_b]
         
@@ -16,6 +19,12 @@ class TokenBaselineAnalyzer:
         tokens_b = extract_tokens(entry_b.code)
         
         if not tokens_a and not tokens_b:
+            meta = {"reason": "empty_or_invalid_code"}
+            if config is not None:
+                meta["config_hash"] = config.config_hash
+                meta["template_version"] = config.version
+                    
+
             return SimilarityReport(
                 analyzer_id = self.analyzer_id,
                 analyzer_version = self.analyzer_version,
@@ -24,7 +33,7 @@ class TokenBaselineAnalyzer:
                 score = None,
                 evidence = (),
                 template_overlap = 0.0,
-                metadata = {"reason": "empty_or_invalid_code"},
+                metadata = meta,
             )
         
         ngrams_a = ngrams(tokens_a, n = 3)
@@ -43,6 +52,17 @@ class TokenBaselineAnalyzer:
             template_overlap = (overlap_a + overlap_b) / 2
         
         evidence = self._find_matching_lines(entry_a.code, entry_b.code)
+
+        meta = {
+                "tokens_a": len(tokens_a),
+                "tokens_b": len(tokens_b),
+                "ngrams_a": len(ngrams_a),
+                "ngrams_b": len(ngrams_b),
+        }
+
+        if config is not None:
+            meta["config_hash"] = config.config_hash
+            meta["template_version"] = config.version
         
         return SimilarityReport(
             analyzer_id = self.analyzer_id,
@@ -52,12 +72,7 @@ class TokenBaselineAnalyzer:
             score = score,
             evidence = evidence,
             template_overlap = template_overlap,
-            metadata = {
-                "tokens_a": len(tokens_a),
-                "tokens_b": len(tokens_b),
-                "ngrams_a": len(ngrams_a),
-                "ngrams_b": len(ngrams_b),
-            },
+            metadata = meta,
         )
     
     def _find_matching_lines(self, code_a: str, code_b: str) -> tuple[tuple[int, int], ...]:

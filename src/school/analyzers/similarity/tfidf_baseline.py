@@ -42,7 +42,12 @@ class TfidfBaselineAnalyzer:
         pair: Pair,
         entries: dict[str, CorpusEntry],
         template_code: str | None = None,
+        *, 
+        config=None
     ) -> SimilarityReport:
+        if config is not None:
+            template_code = config.template_for(pair.assignment_id) or template_code
+        
         entry_a = entries[pair.submission_id_a]
         entry_b = entries[pair.submission_id_b]
         
@@ -50,6 +55,11 @@ class TfidfBaselineAnalyzer:
         vec_b = self._transform(entry_b.code)
         
         if vec_a is None or vec_b is None:
+            meta = {"reason": "empty_or_invalid_code"}
+            if config is not None:
+                meta["config_hash"] = config.config_hash
+                meta["template_version"] = config.version
+
             return SimilarityReport(
                 analyzer_id = self.analyzer_id,
                 analyzer_version = self.analyzer_version,
@@ -58,7 +68,7 @@ class TfidfBaselineAnalyzer:
                 score = None,
                 evidence = (),
                 template_overlap = 0.0,
-                metadata = {"reason": "empty_or_invalid_code"},
+                metadata = meta,
             )
         
         score = float(cosine_similarity(vec_a, vec_b)[0, 0])
@@ -79,6 +89,12 @@ class TfidfBaselineAnalyzer:
                 overlap_b = len(tokens_b & template_tokens) / len(tokens_b)
 
             template_overlap = (overlap_a + overlap_b) / 2
+
+        meta = {"method": "tfidf_cosine"}
+        if config is not None:
+            meta["config_hash"] = config.config_hash
+            meta["template_version"] = config.version
+        
         
         return SimilarityReport(
             analyzer_id = self.analyzer_id,
@@ -88,5 +104,5 @@ class TfidfBaselineAnalyzer:
             score = score,
             evidence = (),
             template_overlap = template_overlap,
-            metadata = {"method": "tfidf_cosine"},
+            metadata = meta,
         )
