@@ -1,0 +1,10 @@
+{
+  "rubric_id": "lab2-rubric",
+  "version": "1.0.0",
+  "criteria": [
+    {"criterion_id": "func", "description": "Defines solve()", "markers": ["def solve"], "required": true},
+    {"criterion_id": "input", "description": "Reads input", "markers": ["input("], "required": true},
+    {"criterion_id": "print", "description": "Prints result", "markers": ["print("], "required": true},
+    {"criterion_id": "loop", "description": "Uses a loop", "markers": ["for ", "while "], "required": false}
+  ]
+}
