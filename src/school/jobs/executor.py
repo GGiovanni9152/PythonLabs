@@ -25,6 +25,7 @@ class JobExecutor:
             raise QueueFullError(f"queue full ({self._queue_limit}); submission preserved")
         await self._repo.save(job)
         self._tasks[job.job_id] = asyncio.create_task(self._run(job, timeout or self._default_timeout))
+        await asyncio.sleep(0) #чтобы успела стартануть
         return job
 
     async def cancel(self, job_id: str) -> AnalysisJob:
@@ -38,12 +39,18 @@ class JobExecutor:
             task.cancel()
             with contextlib.suppress(asyncio.CancelledError):
                 await task
+        cur = await self._repo.get(job_id) #если не успела стартануть
+        if cur is not None and cur.status not in TERMINAL:
+            await self._repo.save(cur.with_status(JobStatus.CANCELLED, error="cancelled"))
         return await self._repo.get(job_id)
 
     async def join(self) -> None:
         await asyncio.gather(*list(self._tasks.values()), return_exceptions=True)
 
     async def _run(self, job: AnalysisJob, timeout: float) -> None:
+        cur = await self._repo.get(job.job_id)
+        if cur is not None and cur.status == JobStatus.CANCELLED: #если отменилось до старта
+            return
         try:
             async with self._sem:
                 running = job.with_status(JobStatus.RUNNING)
@@ -53,11 +60,11 @@ class JobExecutor:
         except asyncio.CancelledError:
             cur = await self._repo.get(job.job_id)
             await self._repo.save(cur.with_status(JobStatus.CANCELLED, error="cancelled"))
-            raise 
+            raise                                    # не проглатываем
         except asyncio.TimeoutError:
             cur = await self._repo.get(job.job_id)
             await self._repo.save(cur.with_status(JobStatus.TIMEOUT, error="timeout"))
-        except Exception as e: 
+        except Exception as e:
             cur = await self._repo.get(job.job_id)
             await self._repo.save(cur.with_status(JobStatus.FAILED, error=str(e)))
         finally:
