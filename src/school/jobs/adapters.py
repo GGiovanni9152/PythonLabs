@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from concurrent.futures import Executor
-from dataclasses import asdict
+from dataclasses import asdict, is_dataclass
 from typing import Any
 
 from school.jobs.models import AnalysisJob
@@ -27,7 +27,12 @@ class SlowAdapter:
 
 
 def _analyze_sync(analyzer, submission, context) -> dict[str, Any]:
-    return asdict(analyzer.analyze(submission, context))
+    result = analyzer.analyze(submission, context)
+    if is_dataclass(result) and not isinstance(result, type):
+        return asdict(result)
+    if isinstance(result, dict):
+        return result
+    return {"result": result}
 
 
 class SyncAnalyzerAdapter:
