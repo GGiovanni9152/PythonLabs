@@ -7,6 +7,7 @@ from typing import Any, Awaitable, Callable
 from school.jobs.errors import JobNotFoundError, QueueFullError
 from school.jobs.models import AnalysisJob, JobStatus, TERMINAL
 from school.jobs.repository import JobRepository
+from school.jobs.model_adapter import ModelError
 
 
 class JobExecutor:
@@ -57,15 +58,27 @@ class JobExecutor:
                 await self._repo.save(running)
                 result = await asyncio.wait_for(self._work(running), timeout)
                 await self._repo.save(running.with_status(JobStatus.COMPLETED, result=result))
+
         except asyncio.CancelledError:
             cur = await self._repo.get(job.job_id)
-            await self._repo.save(cur.with_status(JobStatus.CANCELLED, error="cancelled"))
-            raise                                    # не проглатываем
+            await self._repo.save(cur.with_status(JobStatus.CANCELLED, error="cancelled", error_code="cancelled"))
+            raise
         except asyncio.TimeoutError:
             cur = await self._repo.get(job.job_id)
-            await self._repo.save(cur.with_status(JobStatus.TIMEOUT, error="timeout"))
+            await self._repo.save(cur.with_status(JobStatus.TIMEOUT, error="timeout", error_code="job_timeout"))
+        except ModelError as e:
+            cur = await self._repo.get(job.job_id)
+            await self._repo.save(cur.with_status(JobStatus.FAILED, error=str(e), error_code=e.code.value))
         except Exception as e:
             cur = await self._repo.get(job.job_id)
-            await self._repo.save(cur.with_status(JobStatus.FAILED, error=str(e)))
-        finally:
-            self._tasks.pop(job.job_id, None)
+            await self._repo.save(cur.with_status(JobStatus.FAILED, error=str(e), error_code="internal_error"))
+
+    async def shutdown(self) -> None:
+        tasks = list(self._tasks.values())
+        for t in tasks:
+            t.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+        self._tasks.clear()
+        for status in (JobStatus.PENDING, JobStatus.RUNNING):
+            for j in await self._repo.list_by_status(status):
+                await self._repo.save(j.with_status(JobStatus.CANCELLED, error="shutdown", error_code="shutdown"))
